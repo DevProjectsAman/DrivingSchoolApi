@@ -28,6 +28,6 @@ public class TbCustomer
     [EmailAddress]
     public string Email { get; set; }
 
-    // Navigation Properties
     public virtual ICollection<TbReservation> Reservations { get; set; }
+    public virtual ICollection<TbPayment> Payments { get; set; } // ⭐ NEW
 }

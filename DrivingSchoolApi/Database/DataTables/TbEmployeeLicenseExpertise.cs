@@ -18,7 +18,7 @@ public class TbEmployeeLicenseExpertise
     public int EmployeeId { get; set; }
 
     [Required]
-    public int LicenseId { get; set; }
+    public int LicenseGroupId { get; set; } // ⭐ مجموعة الرخص بدل رخصة واحدة
 
     public bool CanTeachTheory { get; set; }
 
@@ -30,6 +30,7 @@ public class TbEmployeeLicenseExpertise
     [ForeignKey(nameof(EmployeeId))]
     public virtual TbEmployee Employee { get; set; }
 
-    [ForeignKey(nameof(LicenseId))]
-    public virtual TbLicenseType LicenseType { get; set; }
+    [ForeignKey(nameof(LicenseGroupId))]
+    public virtual TbLicenseGroup LicenseGroup { get; set; }
+
 }

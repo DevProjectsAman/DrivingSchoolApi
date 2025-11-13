@@ -381,7 +381,7 @@ namespace DrivingSchoolApi.Migrations
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     LicenseId = table.Column<int>(type: "int", nullable: false),
                     SchoolId = table.Column<int>(type: "int", nullable: false),
-                    ReservationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    ReservationDate = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "varchar(1000)", maxLength: 1000, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")

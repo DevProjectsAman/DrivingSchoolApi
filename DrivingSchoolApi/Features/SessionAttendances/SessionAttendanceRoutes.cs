@@ -1,8 +1,4 @@
-﻿using DrivingSchoolApi.Features.SessionAttendances.CreateSessionAttendance;
-using DrivingSchoolApi.Features.SessionAttendances.UpdateSessionAttendance;
-using DrivingSchoolApi.Features.SessionAttendances.GetAllSessionAttendances;
-using DrivingSchoolApi.Features.SessionAttendances.GetOneSessionAttendance;
-using DrivingSchoolApi.Features.SessionAttendances.DeleteSessionAttendance;
+﻿using DrivingSchoolApi.Features.SessionAttendance;
 using MediatR;
 
 namespace DrivingSchoolApi.Features.SessionAttendances
@@ -14,6 +10,7 @@ namespace DrivingSchoolApi.Features.SessionAttendances
             var group = app.MapGroup("/api/session-attendances");
 
             // CREATE
+            // CREATE
             group.MapPost("/", async (CreateSessionAttendanceCommand cmd, ISender mediator) =>
             {
                 var result = await mediator.Send(cmd);
@@ -24,12 +21,30 @@ namespace DrivingSchoolApi.Features.SessionAttendances
             group.MapPut("/{id}", async (int id, UpdateSessionAttendanceCommand cmd, ISender mediator) =>
             {
                 if (id != cmd.AttendanceId)
-                    return Results.BadRequest(new { Success = false, Message = "Id mismatch" });
+                    return Results.BadRequest(new { Success = false, Message = "ID mismatch" });
 
-                var success = await mediator.Send(cmd);
-                return success
+                var result = await mediator.Send(cmd);
+                return result == null
+                    ? Results.NotFound(new { Success = false, Message = "Attendance not found" })
+                    : Results.Ok(new { Success = true, Data = result });
+            });
+
+            // DELETE
+            group.MapDelete("/{id}", async (int id, ISender mediator) =>
+            {
+                var result = await mediator.Send(new DeleteSessionAttendanceCommand(id));
+                return result
                     ? Results.Ok(new { Success = true })
-                    : Results.NotFound(new { Success = false, Message = "SessionAttendance not found" });
+                    : Results.NotFound(new { Success = false, Message = "Attendance not found" });
+            });
+
+            // GET ONE
+            group.MapGet("/{id}", async (int id, ISender mediator) =>
+            {
+                var result = await mediator.Send(new GetSessionAttendanceByIdQuery(id));
+                return result == null
+                    ? Results.NotFound(new { Success = false, Message = "Attendance not found" })
+                    : Results.Ok(new { Success = true, Data = result });
             });
 
             // GET ALL
@@ -37,24 +52,6 @@ namespace DrivingSchoolApi.Features.SessionAttendances
             {
                 var result = await mediator.Send(new GetAllSessionAttendancesQuery());
                 return Results.Ok(new { Success = true, Data = result });
-            });
-
-            // GET ONE
-            group.MapGet("/{id}", async (int id, ISender mediator) =>
-            {
-                var result = await mediator.Send(new GetOneSessionAttendanceQuery(id));
-                return result == null
-                    ? Results.NotFound(new { Success = false, Message = "SessionAttendance not found" })
-                    : Results.Ok(new { Success = true, Data = result });
-            });
-
-            // DELETE
-            group.MapDelete("/{id}", async (int id, ISender mediator) =>
-            {
-                var success = await mediator.Send(new DeleteSessionAttendanceCommand(id));
-                return success
-                    ? Results.Ok(new { Success = true })
-                    : Results.NotFound(new { Success = false, Message = "SessionAttendance not found" });
             });
         }
     }

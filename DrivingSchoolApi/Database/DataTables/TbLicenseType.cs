@@ -24,6 +24,9 @@ public class TbLicenseType
     // Navigation Properties
     public virtual ICollection<TbReservation> Reservations { get; set; }
     public virtual ICollection<TbVehicle> Vehicles { get; set; }
-    public virtual ICollection<TbCourseSession> CourseSessions { get; set; }
-    public virtual ICollection<TbEmployeeLicenseExpertise> EmployeeExpertises { get; set; }
+    public virtual ICollection<TbCourseList> CourseLists { get; set; } // ⭐ RENAMED
+    public virtual ICollection<TbPayment> Payments { get; set; } // ⭐ NEW
+    public virtual ICollection<TbLicenseGroupMember> LicenseGroupMembers { get; set; } // ⭐ NEW
+    public virtual ICollection<TbSchoolLicense> SchoolLicenses { get; set; } // ⭐ NEW
+
 }

@@ -3,19 +3,20 @@ using DrivingSchoolApi.Database.DataTables;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchool.Api.Features.TransmissionTypes.GetOneTransmissionType
+namespace DrivingSchoolApi.Features.TransmissionType
 {
-    public record GetOneTransmissionTypeQuery(int Id) : IRequest<TbTransmissionType?>;
+    public record GetTransmissionTypeByIdQuery(int TransmissionId) : IRequest<TbTransmissionType>;
 
-    public class Handler : IRequestHandler<GetOneTransmissionTypeQuery, TbTransmissionType?>
+    public class GetByIdHandler : IRequestHandler<GetTransmissionTypeByIdQuery, TbTransmissionType>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public GetByIdHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<TbTransmissionType?> Handle(GetOneTransmissionTypeQuery request, CancellationToken ct)
+        public async Task<TbTransmissionType> Handle(GetTransmissionTypeByIdQuery request, CancellationToken ct)
         {
-            return await _db.TbTransmissionTypes.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.TransmissionTypeId == request.Id, ct);
+            return await _db.TbTransmissionTypes
+                .Include(t => t.Vehicles)
+                .FirstOrDefaultAsync(t => t.TransmissionId == request.TransmissionId, ct);
         }
     }
 }

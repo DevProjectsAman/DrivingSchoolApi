@@ -1,21 +1,22 @@
-﻿
-using DrivingSchoolApi.Database;
+﻿using DrivingSchoolApi.Database;
 using DrivingSchoolApi.Database.DataTables;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchool.Api.Features.TransmissionTypes.GetAllTransmissionTypes
+namespace DrivingSchoolApi.Features.TransmissionType
 {
     public record GetAllTransmissionTypesQuery() : IRequest<List<TbTransmissionType>>;
 
-    public class Handler : IRequestHandler<GetAllTransmissionTypesQuery, List<TbTransmissionType>>
+    public class GetAllHandler : IRequestHandler<GetAllTransmissionTypesQuery, List<TbTransmissionType>>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public GetAllHandler(DrivingSchoolDbContext db) => _db = db;
 
         public async Task<List<TbTransmissionType>> Handle(GetAllTransmissionTypesQuery request, CancellationToken ct)
         {
-            return await _db.TbTransmissionTypes.AsNoTracking().ToListAsync(ct);
+            return await _db.TbTransmissionTypes
+                .Include(t => t.Vehicles)
+                .ToListAsync(ct);
         }
     }
 }

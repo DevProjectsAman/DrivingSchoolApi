@@ -26,7 +26,7 @@ namespace DrivingSchoolApi.Features.Reservations.CreateReservation
                 CustomerId = request.CustomerId,
                 LicenseId = request.LicenseId,
                 SchoolId = request.SchoolId,
-                ReservationDate = request.ReservationDate,
+                ReservationDate = DateTime.Now,
                 Status = request.Status,
                 Notes = request.Notes
             };

@@ -25,7 +25,6 @@ public class TbEmployee
 
     public bool IsActive { get; set; } = true;
 
-    // Navigation Properties
     [ForeignKey(nameof(SchoolId))]
     public virtual TbSchool School { get; set; }
 
@@ -33,5 +32,6 @@ public class TbEmployee
     public virtual TbRole Role { get; set; }
 
     public virtual ICollection<TbEmployeeLicenseExpertise> LicenseExpertises { get; set; }
-    public virtual ICollection<TbCourseSession> CourseSessions { get; set; }
+    public virtual ICollection<TbSessionAttendance> SessionAttendances { get; set; } // ⭐ NEW
+
 }

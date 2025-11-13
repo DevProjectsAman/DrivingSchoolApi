@@ -2,27 +2,27 @@
 using DrivingSchoolApi.Database.DataTables;
 using MediatR;
 
-namespace DrivingSchoolApi.Features.EmployeeLicenseExpertises.CreateEmployeeLicenseExpertise
+namespace DrivingSchoolApi.Features.EmployeeLicenseExpertise
 {
-    public record CreateEmployeeLicenseExpertiseCommand(
+    public record CreateTbEmployeeLicenseExpertiseCommand(
         int EmployeeId,
-        int LicenseId,
+        int LicenseGroupId,
         bool CanTeachTheory,
         bool CanTeachPractical,
         DateTime? CertificationDate
     ) : IRequest<TbEmployeeLicenseExpertise>;
 
-    public class Handler : IRequestHandler<CreateEmployeeLicenseExpertiseCommand, TbEmployeeLicenseExpertise>
+    public class CreateHandler : IRequestHandler<CreateTbEmployeeLicenseExpertiseCommand, TbEmployeeLicenseExpertise>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public CreateHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<TbEmployeeLicenseExpertise> Handle(CreateEmployeeLicenseExpertiseCommand request, CancellationToken ct)
+        public async Task<TbEmployeeLicenseExpertise> Handle(CreateTbEmployeeLicenseExpertiseCommand request, CancellationToken ct)
         {
             var entity = new TbEmployeeLicenseExpertise
             {
                 EmployeeId = request.EmployeeId,
-                LicenseId = request.LicenseId,
+                LicenseGroupId = request.LicenseGroupId,
                 CanTeachTheory = request.CanTeachTheory,
                 CanTeachPractical = request.CanTeachPractical,
                 CertificationDate = request.CertificationDate

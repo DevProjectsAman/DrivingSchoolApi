@@ -18,6 +18,5 @@ public class TbRole
     [MaxLength(100)]
     public string RoleName { get; set; }
 
-    // Navigation Properties
     public virtual ICollection<TbEmployee> Employees { get; set; }
 }

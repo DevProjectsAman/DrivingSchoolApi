@@ -1,19 +1,18 @@
-﻿using DrivingSchoolApi.Database;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using DrivingSchoolApi.Database;
 
-namespace DrivingSchoolApi.Features.EmployeeLicenseExpertises.DeleteEmployeeLicenseExpertise
+namespace DrivingSchoolApi.Features.EmployeeLicenseExpertise
 {
-    public record DeleteEmployeeLicenseExpertiseCommand(int Id) : IRequest<bool>;
+    public record DeleteTbEmployeeLicenseExpertiseCommand(int ExpertiseId) : IRequest<bool>;
 
-    public class Handler : IRequestHandler<DeleteEmployeeLicenseExpertiseCommand, bool>
+    public class DeleteHandler : IRequestHandler<DeleteTbEmployeeLicenseExpertiseCommand, bool>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public DeleteHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<bool> Handle(DeleteEmployeeLicenseExpertiseCommand request, CancellationToken ct)
+        public async Task<bool> Handle(DeleteTbEmployeeLicenseExpertiseCommand request, CancellationToken ct)
         {
-            var entity = await _db.TbEmployeeLicenseExpertises.FirstOrDefaultAsync(x => x.ExpertiseId == request.Id, ct);
+            var entity = await _db.TbEmployeeLicenseExpertises.FindAsync(new object[] { request.ExpertiseId }, ct);
             if (entity == null) return false;
 
             _db.TbEmployeeLicenseExpertises.Remove(entity);

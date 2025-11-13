@@ -22,38 +22,33 @@ namespace DrivingSchoolApi.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCourseSession", b =>
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCourseList", b =>
                 {
-                    b.Property<int>("SessionId")
+                    b.Property<int>("CourseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SessionId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CourseId"));
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<decimal>("DurationHours")
                         .HasColumnType("decimal(5,2)");
 
-                    b.Property<int>("InstructorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("LicenseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SchoolId")
                         .HasColumnType("int");
 
                     b.Property<int>("SessionType")
                         .HasColumnType("int");
 
-                    b.HasKey("SessionId");
+                    b.HasKey("CourseId");
 
-                    b.HasIndex("InstructorId");
+                    b.HasIndex("LicenseId", "SessionType");
 
-                    b.HasIndex("LicenseId");
-
-                    b.HasIndex("SchoolId", "LicenseId", "SessionType");
-
-                    b.ToTable("Tb_Course_Session");
+                    b.ToTable("Tb_Course_List");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCustomer", b =>
@@ -148,17 +143,55 @@ namespace DrivingSchoolApi.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LicenseId")
+                    b.Property<int>("LicenseGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("ExpertiseId");
 
-                    b.HasIndex("LicenseId");
+                    b.HasIndex("LicenseGroupId");
 
-                    b.HasIndex("EmployeeId", "LicenseId")
+                    b.HasIndex("EmployeeId", "LicenseGroupId")
                         .IsUnique();
 
                     b.ToTable("Tb_Employee_License_Expertise");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbLicenseGroup", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("GroupId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("GroupId");
+
+                    b.ToTable("Tb_License_Group");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbLicenseGroupMember", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupId", "LicenseId");
+
+                    b.HasIndex("LicenseId");
+
+                    b.ToTable("Tb_License_Group_Member");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbLicenseType", b =>
@@ -184,6 +217,56 @@ namespace DrivingSchoolApi.Migrations
                     b.ToTable("Tb_License_Type");
                 });
 
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbPayment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<int>("PaymentLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentLocationType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReceiptSerial")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("ReceiptStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("LicenseId");
+
+                    b.HasIndex("ReceiptSerial")
+                        .IsUnique();
+
+                    b.HasIndex("CustomerId", "PaymentDate");
+
+                    b.ToTable("Tb_Payment");
+                });
+
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbReservation", b =>
                 {
                     b.Property<int>("ReservationId")
@@ -203,6 +286,9 @@ namespace DrivingSchoolApi.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ReservationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
@@ -217,6 +303,9 @@ namespace DrivingSchoolApi.Migrations
                     b.HasKey("ReservationId");
 
                     b.HasIndex("LicenseId");
+
+                    b.HasIndex("PaymentId")
+                        .IsUnique();
 
                     b.HasIndex("CustomerId", "Status");
 
@@ -251,6 +340,9 @@ namespace DrivingSchoolApi.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SchoolId"));
 
+                    b.Property<int>("GovId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -269,7 +361,29 @@ namespace DrivingSchoolApi.Migrations
 
                     b.HasKey("SchoolId");
 
+                    b.HasIndex("GovId");
+
                     b.ToTable("Tb_School");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbSchoolLicense", b =>
+                {
+                    b.Property<int>("SchoolId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.HasKey("SchoolId", "LicenseId");
+
+                    b.HasIndex("LicenseId");
+
+                    b.ToTable("Tb_School_License");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbSessionAttendance", b =>
@@ -280,10 +394,24 @@ namespace DrivingSchoolApi.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AttendanceId"));
 
-                    b.Property<DateTime>("AttendanceDate")
+                    b.Property<DateTime?>("AttendanceDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("AttendanceStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("DurationTime")
+                        .HasColumnType("time(6)");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time(6)");
+
+                    b.Property<int>("InstructorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
@@ -294,32 +422,70 @@ namespace DrivingSchoolApi.Migrations
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SessionId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("SessionDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time(6)");
 
                     b.HasKey("AttendanceId");
 
-                    b.HasIndex("SessionId");
+                    b.HasIndex("CourseId");
 
-                    b.HasIndex("ReservationId", "AttendanceDate");
+                    b.HasIndex("InstructorId", "SessionDate");
+
+                    b.HasIndex("ReservationId", "SessionDate");
 
                     b.ToTable("Tb_Session_Attendance");
                 });
 
-            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbTransmissionType", b =>
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbTrafficUnit", b =>
                 {
-                    b.Property<int>("TransmissionTypeId")
+                    b.Property<int>("TrafficUnitId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransmissionTypeId"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TrafficUnitId"));
 
-                    b.Property<string>("TransmissionTypeName")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("TransmissionTypeId");
+                    b.Property<int>("GovId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("UnitName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.HasKey("TrafficUnitId");
+
+                    b.HasIndex("GovId");
+
+                    b.ToTable("Tb_Traffic_Unit");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbTransmissionType", b =>
+                {
+                    b.Property<int>("TransmissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TransmissionId"));
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("TransmissionId");
 
                     b.ToTable("Tb_Transmission_Type");
                 });
@@ -527,7 +693,7 @@ namespace DrivingSchoolApi.Migrations
                             AccessFailedCount = 0,
                             CompanyId = 1,
                             ConcurrencyStamp = "2cc3da7b-b1d4-43fc-b129-4e706e02ac96",
-                            CreatedAt = new DateTime(2025, 11, 11, 13, 42, 45, 428, DateTimeKind.Local).AddTicks(242),
+                            CreatedAt = new DateTime(2025, 11, 13, 15, 24, 39, 638, DateTimeKind.Local).AddTicks(9121),
                             Email = "systemadmin@example.com",
                             EmailConfirmed = false,
                             EmployeeId = 1,
@@ -535,7 +701,7 @@ namespace DrivingSchoolApi.Migrations
                             ForceLogout = false,
                             IsActive = true,
                             IsToChangePassword = false,
-                            LastPasswordChangedAt = new DateTime(2025, 11, 11, 11, 42, 45, 428, DateTimeKind.Utc).AddTicks(2546),
+                            LastPasswordChangedAt = new DateTime(2025, 11, 13, 13, 24, 39, 639, DateTimeKind.Utc).AddTicks(880),
                             LockoutEnabled = false,
                             NormalizedEmail = "SYSTEMADMIN@EXAMPLE.COM",
                             NormalizedUserName = "BOLES",
@@ -544,7 +710,7 @@ namespace DrivingSchoolApi.Migrations
                             PhoneNumber = "01200000000",
                             PhoneNumberConfirmed = true,
                             PreferredLanguage = "en",
-                            RowGuid = new Guid("35195670-1818-4919-b1b9-255fa2e566a1"),
+                            RowGuid = new Guid("523aac64-3ed9-40e3-8636-5bc8787706b8"),
                             SecurityStamp = "6QVLU2WHQVYOV4FRB6EFKIGE2KJJICGL",
                             TwoFactorEnabled = false,
                             UserFullName = "Boles Lewis Boles",
@@ -608,6 +774,31 @@ namespace DrivingSchoolApi.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("AspRolePermissions");
+                });
+
+            modelBuilder.Entity("HRsystem.Api.Database.DataTables.TbGov", b =>
+                {
+                    b.Property<int>("GovId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("GovId"));
+
+                    b.Property<string>("GovArea")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("GovName")
+                        .HasMaxLength(60)
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<string>("GoveCode")
+                        .HasMaxLength(25)
+                        .HasColumnType("varchar(25)");
+
+                    b.HasKey("GovId");
+
+                    b.ToTable("Tb_Gov");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -720,31 +911,15 @@ namespace DrivingSchoolApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCourseSession", b =>
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCourseList", b =>
                 {
-                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbEmployee", "Instructor")
-                        .WithMany("CourseSessions")
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseType", "LicenseType")
-                        .WithMany("CourseSessions")
+                        .WithMany("CourseLists")
                         .HasForeignKey("LicenseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbSchool", "School")
-                        .WithMany("CourseSessions")
-                        .HasForeignKey("SchoolId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Instructor");
-
                     b.Navigation("LicenseType");
-
-                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbEmployee", b =>
@@ -774,13 +949,51 @@ namespace DrivingSchoolApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseType", "LicenseType")
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseGroup", "LicenseGroup")
                         .WithMany("EmployeeExpertises")
-                        .HasForeignKey("LicenseId")
+                        .HasForeignKey("LicenseGroupId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Employee");
+
+                    b.Navigation("LicenseGroup");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbLicenseGroupMember", b =>
+                {
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseGroup", "LicenseGroup")
+                        .WithMany("LicenseGroupMembers")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseType", "LicenseType")
+                        .WithMany("LicenseGroupMembers")
+                        .HasForeignKey("LicenseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("LicenseGroup");
+
+                    b.Navigation("LicenseType");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbPayment", b =>
+                {
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbCustomer", "Customer")
+                        .WithMany("Payments")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseType", "LicenseType")
+                        .WithMany("Payments")
+                        .HasForeignKey("LicenseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("LicenseType");
                 });
@@ -799,6 +1012,12 @@ namespace DrivingSchoolApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbPayment", "Payment")
+                        .WithOne("Reservation")
+                        .HasForeignKey("DrivingSchoolApi.Database.DataTables.TbReservation", "PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DrivingSchoolApi.Database.DataTables.TbSchool", "School")
                         .WithMany("Reservations")
                         .HasForeignKey("SchoolId")
@@ -809,26 +1028,77 @@ namespace DrivingSchoolApi.Migrations
 
                     b.Navigation("LicenseType");
 
+                    b.Navigation("Payment");
+
+                    b.Navigation("School");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbSchool", b =>
+                {
+                    b.HasOne("HRsystem.Api.Database.DataTables.TbGov", "Gov")
+                        .WithMany("Schools")
+                        .HasForeignKey("GovId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Gov");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbSchoolLicense", b =>
+                {
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbLicenseType", "LicenseType")
+                        .WithMany("SchoolLicenses")
+                        .HasForeignKey("LicenseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbSchool", "School")
+                        .WithMany("SchoolLicenses")
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("LicenseType");
+
                     b.Navigation("School");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbSessionAttendance", b =>
                 {
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbCourseList", "Course")
+                        .WithMany("SessionAttendances")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbEmployee", "Instructor")
+                        .WithMany("SessionAttendances")
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DrivingSchoolApi.Database.DataTables.TbReservation", "Reservation")
                         .WithMany("SessionAttendances")
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DrivingSchoolApi.Database.DataTables.TbCourseSession", "CourseSession")
-                        .WithMany("SessionAttendances")
-                        .HasForeignKey("SessionId")
+                    b.Navigation("Course");
+
+                    b.Navigation("Instructor");
+
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbTrafficUnit", b =>
+                {
+                    b.HasOne("HRsystem.Api.Database.DataTables.TbGov", "Gov")
+                        .WithMany("TrafficUnits")
+                        .HasForeignKey("GovId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("CourseSession");
-
-                    b.Navigation("Reservation");
+                    b.Navigation("Gov");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbVehicle", b =>
@@ -928,32 +1198,51 @@ namespace DrivingSchoolApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCourseSession", b =>
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCourseList", b =>
                 {
                     b.Navigation("SessionAttendances");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbCustomer", b =>
                 {
+                    b.Navigation("Payments");
+
                     b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbEmployee", b =>
                 {
-                    b.Navigation("CourseSessions");
-
                     b.Navigation("LicenseExpertises");
+
+                    b.Navigation("SessionAttendances");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbLicenseGroup", b =>
+                {
+                    b.Navigation("EmployeeExpertises");
+
+                    b.Navigation("LicenseGroupMembers");
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbLicenseType", b =>
                 {
-                    b.Navigation("CourseSessions");
+                    b.Navigation("CourseLists");
 
-                    b.Navigation("EmployeeExpertises");
+                    b.Navigation("LicenseGroupMembers");
+
+                    b.Navigation("Payments");
 
                     b.Navigation("Reservations");
 
+                    b.Navigation("SchoolLicenses");
+
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbPayment", b =>
+                {
+                    b.Navigation("Reservation")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbReservation", b =>
@@ -968,11 +1257,11 @@ namespace DrivingSchoolApi.Migrations
 
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbSchool", b =>
                 {
-                    b.Navigation("CourseSessions");
-
                     b.Navigation("Employees");
 
                     b.Navigation("Reservations");
+
+                    b.Navigation("SchoolLicenses");
 
                     b.Navigation("Vehicles");
                 });
@@ -980,6 +1269,13 @@ namespace DrivingSchoolApi.Migrations
             modelBuilder.Entity("DrivingSchoolApi.Database.DataTables.TbTransmissionType", b =>
                 {
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("HRsystem.Api.Database.DataTables.TbGov", b =>
+                {
+                    b.Navigation("Schools");
+
+                    b.Navigation("TrafficUnits");
                 });
 #pragma warning restore 612, 618
         }

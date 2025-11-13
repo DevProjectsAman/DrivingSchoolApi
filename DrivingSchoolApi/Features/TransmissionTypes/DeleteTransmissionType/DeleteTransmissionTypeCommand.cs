@@ -1,20 +1,18 @@
-﻿
-using DrivingSchoolApi.Database;
+﻿using DrivingSchoolApi.Database;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchool.Api.Features.TransmissionTypes.DeleteTransmissionType
+namespace DrivingSchoolApi.Features.TransmissionType
 {
-    public record DeleteTransmissionTypeCommand(int Id) : IRequest<bool>;
+    public record DeleteTransmissionTypeCommand(int TransmissionId) : IRequest<bool>;
 
-    public class Handler : IRequestHandler<DeleteTransmissionTypeCommand, bool>
+    public class DeleteHandler : IRequestHandler<DeleteTransmissionTypeCommand, bool>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public DeleteHandler(DrivingSchoolDbContext db) => _db = db;
 
         public async Task<bool> Handle(DeleteTransmissionTypeCommand request, CancellationToken ct)
         {
-            var entity = await _db.TbTransmissionTypes.FirstOrDefaultAsync(x => x.TransmissionTypeId == request.Id, ct);
+            var entity = await _db.TbTransmissionTypes.FindAsync(new object[] { request.TransmissionId }, ct);
             if (entity == null) return false;
 
             _db.TbTransmissionTypes.Remove(entity);

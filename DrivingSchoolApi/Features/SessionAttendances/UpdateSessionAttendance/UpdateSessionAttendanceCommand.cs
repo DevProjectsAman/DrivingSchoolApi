@@ -1,37 +1,47 @@
 ﻿using DrivingSchoolApi.Database;
+using DrivingSchoolApi.Database.DataTables;
+using DrivingSchoolApi.Enums;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using static DrivingSchoolApi.Enums.EnumsList;
 
-namespace DrivingSchoolApi.Features.SessionAttendances.UpdateSessionAttendance
+namespace DrivingSchoolApi.Features.SessionAttendance
 {
     public record UpdateSessionAttendanceCommand(
         int AttendanceId,
-        int SessionId,
         int ReservationId,
-        DateTime AttendanceDate,
+        int CourseId,
+        int InstructorId,
+        DateTime SessionDate,
+        TimeSpan StartTime,
+        TimeSpan EndTime,
         AttendanceStatus AttendanceStatus,
+        DateTime? AttendanceDate,
         string Notes
-    ) : IRequest<bool>;
+    ) : IRequest<TbSessionAttendance>;
 
-    public class Handler : IRequestHandler<UpdateSessionAttendanceCommand, bool>
+    public class UpdateHandler : IRequestHandler<UpdateSessionAttendanceCommand, TbSessionAttendance>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public UpdateHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<bool> Handle(UpdateSessionAttendanceCommand request, CancellationToken ct)
+        public async Task<TbSessionAttendance> Handle(UpdateSessionAttendanceCommand request, CancellationToken ct)
         {
-            var entity = await _db.TbSessionAttendances.FirstOrDefaultAsync(x => x.AttendanceId == request.AttendanceId, ct);
-            if (entity == null) return false;
+            var entity = await _db.TbSessionAttendances.FindAsync(new object[] { request.AttendanceId }, ct);
+            if (entity == null) return null;
 
-            entity.SessionId = request.SessionId;
             entity.ReservationId = request.ReservationId;
-            entity.AttendanceDate = request.AttendanceDate;
+            entity.CourseId = request.CourseId;
+            entity.InstructorId = request.InstructorId;
+            entity.SessionDate = request.SessionDate;
+            entity.StartTime = request.StartTime;
+            entity.EndTime = request.EndTime;
+            entity.DurationTime = request.EndTime - request.StartTime;
             entity.AttendanceStatus = request.AttendanceStatus;
+            entity.AttendanceDate = request.AttendanceDate;
             entity.Notes = request.Notes;
 
             await _db.SaveChangesAsync(ct);
-            return true;
+            return entity;
         }
     }
 }

@@ -12,12 +12,11 @@ namespace DrivingSchoolApi.Database.DataTables;
 public class TbTransmissionType
 {
     [Key]
-    public int TransmissionTypeId { get; set; }
+    public int TransmissionId { get; set; }
 
     [Required]
     [MaxLength(50)]
-    public string TransmissionTypeName { get; set; }
+    public string TypeName { get; set; }
 
-    // Navigation Properties
     public virtual ICollection<TbVehicle> Vehicles { get; set; }
 }

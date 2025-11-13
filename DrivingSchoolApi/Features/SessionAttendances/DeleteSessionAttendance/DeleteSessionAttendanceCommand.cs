@@ -1,19 +1,18 @@
 ﻿using DrivingSchoolApi.Database;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchoolApi.Features.SessionAttendances.DeleteSessionAttendance
+namespace DrivingSchoolApi.Features.SessionAttendance
 {
-    public record DeleteSessionAttendanceCommand(int Id) : IRequest<bool>;
+    public record DeleteSessionAttendanceCommand(int AttendanceId) : IRequest<bool>;
 
-    public class Handler : IRequestHandler<DeleteSessionAttendanceCommand, bool>
+    public class DeleteHandler : IRequestHandler<DeleteSessionAttendanceCommand, bool>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public DeleteHandler(DrivingSchoolDbContext db) => _db = db;
 
         public async Task<bool> Handle(DeleteSessionAttendanceCommand request, CancellationToken ct)
         {
-            var entity = await _db.TbSessionAttendances.FirstOrDefaultAsync(x => x.AttendanceId == request.Id, ct);
+            var entity = await _db.TbSessionAttendances.FindAsync(new object[] { request.AttendanceId }, ct);
             if (entity == null) return false;
 
             _db.TbSessionAttendances.Remove(entity);

@@ -1,8 +1,5 @@
-﻿using DrivingSchool.Api.Features.TransmissionTypes.CreateTransmissionType;
-using DrivingSchool.Api.Features.TransmissionTypes.UpdateTransmissionType;
-using DrivingSchool.Api.Features.TransmissionTypes.GetAllTransmissionTypes;
-using DrivingSchool.Api.Features.TransmissionTypes.GetOneTransmissionType;
-using DrivingSchool.Api.Features.TransmissionTypes.DeleteTransmissionType;
+﻿
+using DrivingSchoolApi.Features.TransmissionType;
 using MediatR;
 
 namespace DrivingSchool.Api.Features.TransmissionTypes
@@ -23,13 +20,31 @@ namespace DrivingSchool.Api.Features.TransmissionTypes
             // UPDATE
             group.MapPut("/{id}", async (int id, UpdateTransmissionTypeCommand cmd, ISender mediator) =>
             {
-                if (id != cmd.Id)
-                    return Results.BadRequest(new { Success = false, Message = "Id mismatch" });
+                if (id != cmd.TransmissionId)
+                    return Results.BadRequest(new { Success = false, Message = "ID mismatch" });
 
-                var success = await mediator.Send(cmd);
-                return success
+                var result = await mediator.Send(cmd);
+                return result == null
+                    ? Results.NotFound(new { Success = false, Message = "Transmission type not found" })
+                    : Results.Ok(new { Success = true, Data = result });
+            });
+
+            // DELETE
+            group.MapDelete("/{id}", async (int id, ISender mediator) =>
+            {
+                var result = await mediator.Send(new DeleteTransmissionTypeCommand(id));
+                return result
                     ? Results.Ok(new { Success = true })
-                    : Results.NotFound(new { Success = false, Message = "TransmissionType not found" });
+                    : Results.NotFound(new { Success = false, Message = "Transmission type not found" });
+            });
+
+            // GET ONE
+            group.MapGet("/{id}", async (int id, ISender mediator) =>
+            {
+                var result = await mediator.Send(new GetTransmissionTypeByIdQuery(id));
+                return result == null
+                    ? Results.NotFound(new { Success = false, Message = "Transmission type not found" })
+                    : Results.Ok(new { Success = true, Data = result });
             });
 
             // GET ALL
@@ -37,24 +52,6 @@ namespace DrivingSchool.Api.Features.TransmissionTypes
             {
                 var result = await mediator.Send(new GetAllTransmissionTypesQuery());
                 return Results.Ok(new { Success = true, Data = result });
-            });
-
-            // GET ONE
-            group.MapGet("/{id}", async (int id, ISender mediator) =>
-            {
-                var result = await mediator.Send(new GetOneTransmissionTypeQuery(id));
-                return result == null
-                    ? Results.NotFound(new { Success = false, Message = "TransmissionType not found" })
-                    : Results.Ok(new { Success = true, Data = result });
-            });
-
-            // DELETE
-            group.MapDelete("/{id}", async (int id, ISender mediator) =>
-            {
-                var success = await mediator.Send(new DeleteTransmissionTypeCommand(id));
-                return success
-                    ? Results.Ok(new { Success = true })
-                    : Results.NotFound(new { Success = false, Message = "TransmissionType not found" });
             });
         }
     }

@@ -28,7 +28,7 @@ namespace DrivingSchoolApi.Features.Reservations.UpdateReservation
             entity.CustomerId = request.CustomerId;
             entity.LicenseId = request.LicenseId;
             entity.SchoolId = request.SchoolId;
-            entity.ReservationDate = request.ReservationDate;
+            entity.ReservationDate = DateTime.Now;
             entity.Status = request.Status;
             entity.Notes = request.Notes;
 

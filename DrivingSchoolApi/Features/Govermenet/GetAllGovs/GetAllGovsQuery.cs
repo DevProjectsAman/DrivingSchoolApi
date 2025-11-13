@@ -1,0 +1,47 @@
+﻿using DrivingSchoolApi.Database;
+using HRsystem.Api.Database;
+using HRsystem.Api.Database.DataTables;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using static HRsystem.Api.Features.Organization.Govermenet.GetAllGovs.Handler;
+
+namespace HRsystem.Api.Features.Organization.Govermenet.GetAllGovs
+{
+    public record GetAllGovsQuery() : IRequest<List<GovDto>>;
+
+    public class Handler : IRequestHandler<GetAllGovsQuery, List<GovDto>>
+    {
+        private readonly DrivingSchoolDbContext _db;
+        public Handler(DrivingSchoolDbContext db) => _db = db;
+
+        public async Task<List<GovDto>> Handle(GetAllGovsQuery request, CancellationToken ct)
+        {
+            return await _db.TbGov
+                .Select(g => new GovDto
+                {
+                    GovId = g.GovId,
+                    GovName = g.GovName,
+                    //Cities = g.TbCities.Select(c => new CityDto
+                    //{
+                    //    CityId = c.CityId,
+                    //    CityName = c.CityName
+                    //}).ToList()
+                })
+                .ToListAsync(ct);
+        }
+
+        public class GovDto
+        {
+            public int GovId { get; set; }
+            public string GovName { get; set; }
+            public List<CityDto> Cities { get; set; } = new();
+        }
+
+        public class CityDto
+        {
+            public int CityId { get; set; }
+            public string? CityName { get; set; }
+        }
+
+    }
+}

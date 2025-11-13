@@ -23,6 +23,9 @@ public class TbReservation
     public int SchoolId { get; set; }
 
     [Required]
+    public int PaymentId { get; set; } // ⭐ NOT NULL - لازم يدفع الأول
+
+    [Required]
     public DateTime ReservationDate { get; set; }
 
     [Required]
@@ -41,5 +44,9 @@ public class TbReservation
     [ForeignKey(nameof(SchoolId))]
     public virtual TbSchool School { get; set; }
 
+    [ForeignKey(nameof(PaymentId))]
+    public virtual TbPayment Payment { get; set; } // ⭐ NEW
+
     public virtual ICollection<TbSessionAttendance> SessionAttendances { get; set; }
+
 }

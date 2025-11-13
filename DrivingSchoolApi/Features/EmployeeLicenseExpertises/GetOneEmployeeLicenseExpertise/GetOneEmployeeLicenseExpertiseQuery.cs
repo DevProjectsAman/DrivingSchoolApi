@@ -1,23 +1,23 @@
-﻿using DrivingSchoolApi.Database;
+﻿using MediatR;
+using DrivingSchoolApi.Database;
 using DrivingSchoolApi.Database.DataTables;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchoolApi.Features.EmployeeLicenseExpertises.GetOneEmployeeLicenseExpertise
+namespace DrivingSchoolApi.Features.EmployeeLicenseExpertise
 {
-    public record GetOneEmployeeLicenseExpertiseQuery(int Id) : IRequest<TbEmployeeLicenseExpertise>;
+    public record GetTbEmployeeLicenseExpertiseByIdQuery(int ExpertiseId) : IRequest<TbEmployeeLicenseExpertise>;
 
-    public class Handler : IRequestHandler<GetOneEmployeeLicenseExpertiseQuery, TbEmployeeLicenseExpertise>
+    public class GetByIdHandler : IRequestHandler<GetTbEmployeeLicenseExpertiseByIdQuery, TbEmployeeLicenseExpertise>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public GetByIdHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<TbEmployeeLicenseExpertise> Handle(GetOneEmployeeLicenseExpertiseQuery request, CancellationToken ct)
+        public async Task<TbEmployeeLicenseExpertise> Handle(GetTbEmployeeLicenseExpertiseByIdQuery request, CancellationToken ct)
         {
             return await _db.TbEmployeeLicenseExpertises
                 .Include(e => e.Employee)
-                .Include(e => e.LicenseType)
-                .FirstOrDefaultAsync(x => x.ExpertiseId == request.Id, ct);
+                .Include(e => e.LicenseGroup)
+                .FirstOrDefaultAsync(e => e.ExpertiseId == request.ExpertiseId, ct);
         }
     }
 }

@@ -31,7 +31,6 @@ public class TbVehicle
     [MaxLength(500)]
     public string Notes { get; set; }
 
-    // Navigation Properties
     [ForeignKey(nameof(SchoolId))]
     public virtual TbSchool School { get; set; }
 

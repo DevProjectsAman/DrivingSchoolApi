@@ -14,24 +14,40 @@ public class TbSessionAttendance
     public int AttendanceId { get; set; }
 
     [Required]
-    public int SessionId { get; set; }
-
-    [Required]
     public int ReservationId { get; set; }
 
     [Required]
-    public DateTime AttendanceDate { get; set; }
+    public int CourseId { get; set; }
 
     [Required]
-    public AttendanceStatus AttendanceStatus { get; set; }
+    public int InstructorId { get; set; } // ⭐ المحاضر المسؤول عن الحصة
+
+    [Required]
+    public DateTime SessionDate { get; set; } // ⭐ تاريخ الحصة
+
+    [Required]
+    public TimeSpan StartTime { get; set; } // ⭐ وقت البداية
+
+    public TimeSpan DurationTime { get; set; }
+
+    [Required]
+    public TimeSpan EndTime { get; set; } // ⭐ وقت النهاية
+
+    [Required]
+    public AttendanceStatus AttendanceStatus { get; set; } = AttendanceStatus.Scheduled;
+
+    public DateTime? AttendanceDate { get; set; } // متى تم تسجيل الحضور الفعلي
 
     [MaxLength(500)]
     public string Notes { get; set; }
 
     // Navigation Properties
-    [ForeignKey(nameof(SessionId))]
-    public virtual TbCourseSession CourseSession { get; set; }
-
     [ForeignKey(nameof(ReservationId))]
     public virtual TbReservation Reservation { get; set; }
+
+    [ForeignKey(nameof(CourseId))]
+    public virtual TbCourseList Course { get; set; }
+
+    [ForeignKey(nameof(InstructorId))]
+    public virtual TbEmployee Instructor { get; set; }
 }

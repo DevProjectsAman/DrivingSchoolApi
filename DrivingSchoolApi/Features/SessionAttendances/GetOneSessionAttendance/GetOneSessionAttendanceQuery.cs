@@ -3,21 +3,22 @@ using DrivingSchoolApi.Database.DataTables;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchoolApi.Features.SessionAttendances.GetOneSessionAttendance
+namespace DrivingSchoolApi.Features.SessionAttendance
 {
-    public record GetOneSessionAttendanceQuery(int Id) : IRequest<TbSessionAttendance>;
+    public record GetSessionAttendanceByIdQuery(int AttendanceId) : IRequest<TbSessionAttendance>;
 
-    public class Handler : IRequestHandler<GetOneSessionAttendanceQuery, TbSessionAttendance>
+    public class GetByIdHandler : IRequestHandler<GetSessionAttendanceByIdQuery, TbSessionAttendance>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public GetByIdHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<TbSessionAttendance> Handle(GetOneSessionAttendanceQuery request, CancellationToken ct)
+        public async Task<TbSessionAttendance> Handle(GetSessionAttendanceByIdQuery request, CancellationToken ct)
         {
             return await _db.TbSessionAttendances
-                .Include(sa => sa.CourseSession)
-                .Include(sa => sa.Reservation)
-                .FirstOrDefaultAsync(x => x.AttendanceId == request.Id, ct);
+                .Include(s => s.Reservation)
+                .Include(s => s.Course)
+                .Include(s => s.Instructor)
+                .FirstOrDefaultAsync(s => s.AttendanceId == request.AttendanceId, ct);
         }
     }
 }

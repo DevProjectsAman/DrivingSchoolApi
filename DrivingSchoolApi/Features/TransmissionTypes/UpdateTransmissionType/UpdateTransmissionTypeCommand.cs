@@ -1,25 +1,24 @@
-﻿
-using DrivingSchoolApi.Database;
+﻿using DrivingSchoolApi.Database;
+using DrivingSchoolApi.Database.DataTables;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
-namespace DrivingSchool.Api.Features.TransmissionTypes.UpdateTransmissionType
+namespace DrivingSchoolApi.Features.TransmissionType
 {
-    public record UpdateTransmissionTypeCommand(int Id, string TransmissionTypeName) : IRequest<bool>;
+    public record UpdateTransmissionTypeCommand(int TransmissionId, string TypeName) : IRequest<TbTransmissionType>;
 
-    public class Handler : IRequestHandler<UpdateTransmissionTypeCommand, bool>
+    public class UpdateHandler : IRequestHandler<UpdateTransmissionTypeCommand, TbTransmissionType>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public UpdateHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<bool> Handle(UpdateTransmissionTypeCommand request, CancellationToken ct)
+        public async Task<TbTransmissionType> Handle(UpdateTransmissionTypeCommand request, CancellationToken ct)
         {
-            var entity = await _db.TbTransmissionTypes.FirstOrDefaultAsync(x => x.TransmissionTypeId == request.Id, ct);
-            if (entity == null) return false;
+            var entity = await _db.TbTransmissionTypes.FindAsync(new object[] { request.TransmissionId }, ct);
+            if (entity == null) return null;
 
-            entity.TransmissionTypeName = request.TransmissionTypeName;
+            entity.TypeName = request.TypeName;
             await _db.SaveChangesAsync(ct);
-            return true;
+            return entity;
         }
     }
 }

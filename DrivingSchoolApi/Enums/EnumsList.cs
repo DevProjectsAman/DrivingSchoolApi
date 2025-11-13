@@ -32,9 +32,23 @@
 
         public enum AttendanceStatus
         {
+            Scheduled = 0, // جدول بس لسه محضرش
             Present = 1,
             Absent = 2,
             Excused = 3
+        }
+
+        public enum PaymentLocationType
+        {
+            School = 1,
+            TrafficUnit = 2
+        }
+
+        public enum ReceiptStatus
+        {
+            Valid = 1,
+            Cancelled = 2,
+            Refunded = 3
         }
 
     }

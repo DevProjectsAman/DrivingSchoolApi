@@ -1,36 +1,36 @@
-﻿using DrivingSchoolApi.Database;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using DrivingSchoolApi.Database;
+using DrivingSchoolApi.Database.DataTables;
 
-namespace DrivingSchoolApi.Features.EmployeeLicenseExpertises.UpdateEmployeeLicenseExpertise
+namespace DrivingSchoolApi.Features.EmployeeLicenseExpertise
 {
-    public record UpdateEmployeeLicenseExpertiseCommand(
+    public record UpdateTbEmployeeLicenseExpertiseCommand(
         int ExpertiseId,
         int EmployeeId,
-        int LicenseId,
+        int LicenseGroupId,
         bool CanTeachTheory,
         bool CanTeachPractical,
         DateTime? CertificationDate
-    ) : IRequest<bool>;
+    ) : IRequest<TbEmployeeLicenseExpertise>;
 
-    public class Handler : IRequestHandler<UpdateEmployeeLicenseExpertiseCommand, bool>
+    public class UpdateHandler : IRequestHandler<UpdateTbEmployeeLicenseExpertiseCommand, TbEmployeeLicenseExpertise>
     {
         private readonly DrivingSchoolDbContext _db;
-        public Handler(DrivingSchoolDbContext db) => _db = db;
+        public UpdateHandler(DrivingSchoolDbContext db) => _db = db;
 
-        public async Task<bool> Handle(UpdateEmployeeLicenseExpertiseCommand request, CancellationToken ct)
+        public async Task<TbEmployeeLicenseExpertise> Handle(UpdateTbEmployeeLicenseExpertiseCommand request, CancellationToken ct)
         {
-            var entity = await _db.TbEmployeeLicenseExpertises.FirstOrDefaultAsync(x => x.ExpertiseId == request.ExpertiseId, ct);
-            if (entity == null) return false;
+            var entity = await _db.TbEmployeeLicenseExpertises.FindAsync(new object[] { request.ExpertiseId }, ct);
+            if (entity == null) return null;
 
             entity.EmployeeId = request.EmployeeId;
-            entity.LicenseId = request.LicenseId;
+            entity.LicenseGroupId = request.LicenseGroupId;
             entity.CanTeachTheory = request.CanTeachTheory;
             entity.CanTeachPractical = request.CanTeachPractical;
             entity.CertificationDate = request.CertificationDate;
 
             await _db.SaveChangesAsync(ct);
-            return true;
+            return entity;
         }
     }
 }

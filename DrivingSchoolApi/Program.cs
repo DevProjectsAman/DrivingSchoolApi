@@ -9,8 +9,12 @@ using DrivingSchoolApi.Features.CourseSessions;
 using DrivingSchoolApi.Features.Customers;
 using DrivingSchoolApi.Features.EmployeeLicenseExpertises;
 using DrivingSchoolApi.Features.Employees;
+using DrivingSchoolApi.Features.LicenseGroup;
+using DrivingSchoolApi.Features.LicenseGroupMembers;
+using DrivingSchoolApi.Features.Payments;
 using DrivingSchoolApi.Features.Reservations;
 using DrivingSchoolApi.Features.SessionAttendances;
+using DrivingSchoolApi.Features.TrafficUnit;
 using DrivingSchoolApi.Services;
 using DrivingSchoolApi.Services.Auth;
 using DrivingSchoolApi.Services.CurrentUser;
@@ -246,14 +250,18 @@ app.UseAuthorization();
 
 
 
-app.MapLicenseTypeEndpoints();
+//app.MapLicenseTypeEndpoints();
 app.MapVehicleEndpoints();
 app.MapTransmissionTypeEndpoints();
+app.MapTrafficUnit();
 app.MapSessionAttendanceEndpoints();
 app.MapSchoolEndpoints();
 app.MapRoleEndpoints();
 app.MapReservationEndpoints();
+app.MapPayment();
 app.MapLicenseTypeEndpoints();
+app.MapLicenseGroupMember();
+app.MapLicenseGroup();
 app.MapEmployeeEndpoints();
 app.MapEmployeeLicenseExpertiseEndpoints();
 app.MapCustomerEndpoints();

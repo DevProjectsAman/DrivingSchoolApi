@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HRsystem.Api.Database.DataTables;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,9 @@ public class TbSchool
     [MaxLength(200)]
     public string SchoolName { get; set; }
 
+    [Required]
+    public int GovId { get; set; }
+
     [MaxLength(500)]
     public string Location { get; set; }
 
@@ -24,7 +28,6 @@ public class TbSchool
 
     public int SeatsPerHall { get; set; }
 
-    // Computed Property
     [NotMapped]
     public int TotalCapacity => TotalLectureHalls * SeatsPerHall;
 
@@ -32,5 +35,9 @@ public class TbSchool
     public virtual ICollection<TbEmployee> Employees { get; set; }
     public virtual ICollection<TbVehicle> Vehicles { get; set; }
     public virtual ICollection<TbReservation> Reservations { get; set; }
-    public virtual ICollection<TbCourseSession> CourseSessions { get; set; }
+    public virtual ICollection<TbSchoolLicense> SchoolLicenses { get; set; } // ⭐ NEW
+
+    // Navigation Property
+    [ForeignKey(nameof(GovId))]
+    public virtual TbGov Gov { get; set; }
 }
