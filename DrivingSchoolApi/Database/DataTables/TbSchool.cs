@@ -24,6 +24,10 @@ public class TbSchool
     [MaxLength(500)]
     public string Location { get; set; }
 
+    public DateTime StartTime { get; set; }
+
+    public DateTime EndTime { get; set; }
+
     public int TotalLectureHalls { get; set; }
 
     public int SeatsPerHall { get; set; }
@@ -36,6 +40,7 @@ public class TbSchool
     public virtual ICollection<TbVehicle> Vehicles { get; set; }
     public virtual ICollection<TbReservation> Reservations { get; set; }
     public virtual ICollection<TbSchoolLicense> SchoolLicenses { get; set; } // ⭐ NEW
+    public virtual ICollection<TbSchoolOperatingHour> OperatingHours { get; set; } // ⭐ NEW
 
     // Navigation Property
     [ForeignKey(nameof(GovId))]

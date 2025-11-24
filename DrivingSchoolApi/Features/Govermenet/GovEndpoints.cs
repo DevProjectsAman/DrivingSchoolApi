@@ -1,13 +1,9 @@
-﻿using DrivingSchoolApi.Features.LicenseGroup;
-using FluentValidation;
-using HRsystem.Api.Database.DataTables;
-using HRsystem.Api.Features.Organization.Govermenet.CreateGov;
+﻿using HRsystem.Api.Features.Organization.Govermenet.CreateGov;
 using HRsystem.Api.Features.Organization.Govermenet.DeleteGov;
 using HRsystem.Api.Features.Organization.Govermenet.GetAllGovs;
 using HRsystem.Api.Features.Organization.Govermenet.GetGovById;
 using HRsystem.Api.Features.Organization.Govermenet.UpdateGov;
 using MediatR;
-using static HRsystem.Api.Features.Organization.Govermenet.GetAllGovs.Handler;
 
 namespace HRsystem.Api.Features.Organization.Govermenet
 {

@@ -1,5 +1,4 @@
-﻿
-using DrivingSchoolApi.Database;
+﻿using DrivingSchoolApi.Database;
 using DrivingSchoolApi.Database.DataTables;
 using MediatR;
 
@@ -9,7 +8,9 @@ namespace DrivingSchool.Api.Features.Schools.CreateSchool
         string SchoolName,
         string? Location,
         int TotalLectureHalls,
-        int SeatsPerHall
+        int SeatsPerHall,
+        DateTime StartTime,
+        DateTime EndTime
     ) : IRequest<TbSchool>;
 
     public class Handler : IRequestHandler<CreateSchoolCommand, TbSchool>
@@ -24,11 +25,14 @@ namespace DrivingSchool.Api.Features.Schools.CreateSchool
                 SchoolName = request.SchoolName,
                 Location = request.Location,
                 TotalLectureHalls = request.TotalLectureHalls,
-                SeatsPerHall = request.SeatsPerHall
+                SeatsPerHall = request.SeatsPerHall,
+                StartTime = request.StartTime,
+                EndTime = request.EndTime
             };
 
             _db.TbSchools.Add(entity);
             await _db.SaveChangesAsync(ct);
+
             return entity;
         }
     }

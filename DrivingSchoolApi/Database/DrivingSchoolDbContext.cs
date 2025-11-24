@@ -41,8 +41,8 @@ public class DrivingSchoolDbContext : IdentityDbContext<ApplicationUser, Applica
     public DbSet<TbSchoolLicense> TbSchoolLicenses { get; set; }
     public virtual DbSet<AspPermission> AspPermissions { get; set; }
     public virtual DbSet<AspRolePermissions> AspRolePermissions { get; set; }
+    public DbSet<TbSchoolOperatingHour> TbSchoolOperatingHours { get; set; }
 
-    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -87,6 +87,9 @@ public class DrivingSchoolDbContext : IdentityDbContext<ApplicationUser, Applica
             .HasIndex(p => p.PermissionName)
             .IsUnique();
 
+        modelBuilder.Entity<TbSchoolOperatingHour>()
+            .HasIndex(oh => new { oh.SchoolId, oh.DayOfWeek })
+            .IsUnique(); // One record per school per day
 
         //modelBuilder.Entity<TbShift>(entity =>
         //{
@@ -313,6 +316,14 @@ public class DrivingSchoolDbContext : IdentityDbContext<ApplicationUser, Applica
             .HasForeignKey(ele => ele.LicenseGroupId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // School -> OperatingHours (1:M)
+        modelBuilder.Entity<TbSchoolOperatingHour>()
+            .HasOne(oh => oh.School)
+            .WithMany(s => s.OperatingHours)
+            .HasForeignKey(oh => oh.SchoolId)
+            .OnDelete(DeleteBehavior.Cascade); // If school deleted, remove operating hours
+
+
         // ==================== DEFAULT VALUES ====================
 
         modelBuilder.Entity<TbReservation>()
@@ -338,6 +349,10 @@ public class DrivingSchoolDbContext : IdentityDbContext<ApplicationUser, Applica
         modelBuilder.Entity<TbSessionAttendance>()
             .Property(sa => sa.AttendanceStatus)
             .HasDefaultValue(AttendanceStatus.Scheduled);
+
+        modelBuilder.Entity<TbSchoolOperatingHour>()
+            .Property(oh => oh.IsWorkingDay)
+            .HasDefaultValue(true);
     }
 
 }

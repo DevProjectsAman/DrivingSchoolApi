@@ -10,7 +10,9 @@ namespace DrivingSchool.Api.Features.Schools.UpdateSchool
         string SchoolName,
         string? Location,
         int TotalLectureHalls,
-        int SeatsPerHall
+        int SeatsPerHall,
+        DateTime StartTime,
+        DateTime EndTime
     ) : IRequest<bool>;
 
     public class Handler : IRequestHandler<UpdateSchoolCommand, bool>
@@ -27,6 +29,8 @@ namespace DrivingSchool.Api.Features.Schools.UpdateSchool
             entity.Location = request.Location;
             entity.TotalLectureHalls = request.TotalLectureHalls;
             entity.SeatsPerHall = request.SeatsPerHall;
+            entity.StartTime = request.StartTime;
+            entity.EndTime = request.EndTime;
 
             await _db.SaveChangesAsync(ct);
             return true;
