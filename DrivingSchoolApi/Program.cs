@@ -1,4 +1,4 @@
-﻿using DrivingSchool.Api.Features.LicenseTypes;
+using DrivingSchool.Api.Features.LicenseTypes;
 using DrivingSchool.Api.Features.Roles;
 using DrivingSchool.Api.Features.Schools;
 using DrivingSchool.Api.Features.TransmissionTypes;
@@ -268,13 +268,11 @@ app.MapCustomerEndpoints();
 app.MapCourseSessionEndpoints();
 
 
+app.UseStaticFiles();
+app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
-
-
-app.MapControllers();
-
- app.Run();
 
 
 
