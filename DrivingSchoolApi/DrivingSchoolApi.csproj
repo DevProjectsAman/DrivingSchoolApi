@@ -9,13 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Features\AccessManagment\**" />
-	  <Content Remove="Features\AccessManagment\**" />
-	  <EmbeddedResource Remove="Features\AccessManagment\**" />
-	  <None Remove="Features\AccessManagment\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Compile Remove="Features\Organization\Groups\Create\CreateGroupEndpoint.cs" />
 	  <Compile Remove="Features\Organization\Groups\DeleteGroup\DeleteGroupEndPoint.cs" />
 	  <Compile Remove="Features\Organization\Groups\GetALlGroup\GetAllGroupEndPoint.cs" />
@@ -62,6 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Features\AccessManagment\SystemAdmin\UserRoles\" />
 	  <Folder Include="Migrations\" />
 	</ItemGroup>
 

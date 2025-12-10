@@ -25,6 +25,7 @@ using DrivingSchoolApi.Services.CurrentUser;
 using DrivingSchoolApi.Shared.EncryptText;
 using DrivingSchoolApi.Shared.ValidationHandler;
 using FluentValidation;
+using HRsystem.Api.Features.AccessManagment.Auth.UserManagement;
 using HRsystem.Api.Features.Organization.Govermenet;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -211,7 +212,7 @@ app.UseMiddleware<GlobalExceptionMiddleware>();
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "DrivingSchoolApi v1");
 
-        // options.RoutePrefix = ""; // 👈 makes Swagger the root page
+         options.RoutePrefix = ""; 
     });
 
 //}
@@ -279,9 +280,15 @@ app.MapSessionAttendanceAfterReservationEndpoints();
 app.MapSchoolOperatingHoursReservationEndpoints();
 app.MapInstructorEndpoints();
 
+app.MapUserManagementEndpoints();
+
+
+
 
 app.MapControllers();
-app.MapFallbackToFile("index.html");
+//app.MapFallbackToFile("index.html");
+
+
 
 app.Run();
 
