@@ -8,6 +8,7 @@ using DrivingSchoolApi.Database.Entities;
 using DrivingSchoolApi.Features.CallCenterReservation;
 using DrivingSchoolApi.Features.CourseSessions;
 using DrivingSchoolApi.Features.Customers;
+using DrivingSchoolApi.Features.DataEntries;
 using DrivingSchoolApi.Features.EmployeeLicenseExpertises;
 using DrivingSchoolApi.Features.Employees;
 using DrivingSchoolApi.Features.Enrollment;
@@ -274,7 +275,7 @@ app.MapEmployeeEndpoints();
 app.MapEmployeeLicenseExpertiseEndpoints();
 app.MapCustomerEndpoints();
 app.MapCourseSessionEndpoints();
-
+app.MapDataEntryEndpoints();
 app.MapEnrollmentEndpoints();
 app.MapSessionAttendanceAfterReservationEndpoints();
 app.MapSchoolOperatingHoursReservationEndpoints();
